@@ -1,0 +1,13 @@
+version: '3.7'
+
+services:
+  restapi:
+    container_name: app
+    build: .
+    restart: always
+    volumes:
+      - ${ASSETS_PATH}:/app/assets
+    env_file:
+      - .env
+    ports:
+      - "8099:8099"

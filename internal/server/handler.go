@@ -87,14 +87,13 @@ func (h *handler) GetSettingsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *handler) GetStateInstanceHandler(w http.ResponseWriter, r *http.Request) {
-	i, ok := h.checkInstance(r.Context(), w, r.URL.Query().Get(idInstanceName), r.URL.Query().Get(apiTokenName))
-	if !ok {
+	if _, ok := h.checkInstance(r.Context(), w, r.URL.Query().Get(idInstanceName), r.URL.Query().Get(apiTokenName)); !ok {
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 
-	if err := json.NewEncoder(w).Encode(&i); err != nil {
+	if err := json.NewEncoder(w).Encode(map[string]string{"stateInstance": "authorized"}); err != nil {
 		log.Printf("Error encoding JSON: %v", err)
 		http.Error(w, "Error encoding JSON", http.StatusInternalServerError)
 	}

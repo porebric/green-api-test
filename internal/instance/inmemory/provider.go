@@ -22,40 +22,30 @@ func NewProvider() *provider {
 		Name:  "test1",
 		Token: "test_token_1",
 	})
-	p.cacheInstance.set(models.Instance{
-		Id:    2,
-		Name:  "test2",
-		Token: "test_token_2",
-	})
+
 	p.cacheSettings.set(models.Settings{
-		InstanceId: 1,
-		Settings: []models.Setting{
-			{
-				Id:    1,
-				Name:  "setting_1",
-				Value: "val1",
-			},
-			{
-				Id:    2,
-				Name:  "setting_2",
-				Value: "val2",
-			},
-		},
-	})
-	p.cacheSettings.set(models.Settings{
-		InstanceId: 1,
-		Settings: []models.Setting{
-			{
-				Id:    3,
-				Name:  "setting_1",
-				Value: "val1",
-			},
-			{
-				Id:    4,
-				Name:  "setting_2",
-				Value: "val2",
-			},
-		},
+		InstanceId:                        1,
+		Wid:                               "11001234567@c.us",
+		CountryInstance:                   "",
+		TypeAccount:                       "",
+		WebhookUrl:                        "https://mysite.com/webhook/green-api/",
+		WebhookUrlToken:                   "",
+		DelaySendMessagesMilliseconds:     5000,
+		MarkIncomingMessagesReaded:        "no",
+		MarkIncomingMessagesReadedOnReply: "no",
+		SharedSession:                     "no",
+		OutgoingWebhook:                   "yes",
+		OutgoingMessageWebhook:            "yes",
+		OutgoingAPIMessageWebhook:         "yes",
+		IncomingWebhook:                   "yes",
+		DeviceWebhook:                     "no", // Уведомление временно не работает
+		StatusInstanceWebhook:             "no",
+		StateWebhook:                      "no",
+		EnableMessagesHistory:             "no",
+		KeepOnlineStatus:                  "no",
+		PollMessageWebhook:                "no",
+		IncomingBlockWebhook:              "yes", // Уведомление временно не работает
+		IncomingCallWebhook:               "yes",
 	})
 
 	return p

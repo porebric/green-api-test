@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -23,9 +24,11 @@ func main() {
 
 	r.Handle("/metrics", promhttp.Handler())
 
-	fmt.Println("Server started at :8080")
+	fmt.Println("Server started at :8099")
 
-	http.ListenAndServe(":8090", applyMiddlewares(r))
+	if err := http.ListenAndServe(":8099", applyMiddlewares(r)); err != nil {
+		log.Fatal("Error: ", err)
+	}
 }
 
 func applyMiddlewares(handler http.Handler) http.Handler {
