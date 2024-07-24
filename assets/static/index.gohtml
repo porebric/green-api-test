@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Go Web Server</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input[type="text"], input[type="file"], textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0 10px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .response {
+            margin-top: 20px;
+        }
+        textarea[readonly] {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Go Web Server</h1>
+
+    <form id="getSettingsForm">
+        <label for="{{.IDInstanceName}}">ID Instance:</label>
+        <input type="text" id="{{.IDInstanceName}}" name="{{.IDInstanceName}}" oninput="updateForms()"><br>
+        <label for="{{.APITokenName}}">API Token Instance:</label>
+        <input type="text" id="{{.APITokenName}}" name="{{.APITokenName}}" oninput="updateForms()"><br>
+        <button type="button" onclick="sendGetRequest('/getSettings')">Get Settings</button>
+    </form>
+
+    <form id="getStateInstanceForm">
+        <input type="hidden" id="{{.IDInstanceName}}" name="{{.IDInstanceName}}" value="">
+        <input type="hidden" id="{{.APITokenName}}" name="{{.APITokenName}}" value="">
+        <button type="button" onclick="sendGetRequest('/getStateInstance')">Get State Instance</button>
+    </form>
+
+    <form id="sendMessageForm">
+        <input type="hidden" id="{{.IDInstanceName}}" name="{{.IDInstanceName}}" value="">
+        <input type="hidden" id="{{.APITokenName}}" name="{{.APITokenName}}" value="">
+        <label for="{{.PhoneNumberName}}">Phone Number:</label>
+        <input type="text" id="{{.PhoneNumberName}}" name="{{.PhoneNumberName}}">
+        <br>
+        <label for="{{.MessageBodyName}}">Message Body:</label>
+        <textarea id="{{.MessageBodyName}}" name="{{.MessageBodyName}}" rows="4"></textarea>
+        <br>
+        <button type="button" onclick="sendPostRequest('/sendMessage')">Send Message</button>
+    </form>
+
+    <form id="sendFileByUrlForm" enctype="multipart/form-data">
+        <input type="hidden" id="{{.IDInstanceName}}" name="{{.IDInstanceName}}" value="">
+        <input type="hidden" id="{{.APITokenName}}" name="{{.APITokenName}}" value="">
+        <label for="{{.PhoneNumberFileName}}">Phone Number:</label>
+        <input type="text" id="{{.PhoneNumberFileName}}" name="{{.PhoneNumberFileName}}">
+        <br>
+        <label for="{{.FileUrlName}}">File:</label>
+        <input type="file" id="{{.FileUrlName}}" name="{{.FileUrlName}}">
+        <br>
+        <button type="button" onclick="sendPostRequest('/sendFileByUrl')">Send File by URL</button>
+    </form>
+
+    <div class="response">
+        <h2>Response</h2>
+        <textarea id="responseText" rows="10" readonly></textarea>
+    </div>
+</div>
+
+<script>
+    function updateForms() {
+        const idInstance = document.getElementById("{{.IDInstanceName}}").value;
+        const apiToken = document.getElementById("{{.APITokenName}}").value;
+
+        document.querySelectorAll('input[name="{{.IDInstanceName}}"]').forEach(input => input.value = idInstance);
+        document.querySelectorAll('input[name="{{.APITokenName}}"]').forEach(input => input.value = apiToken);
+    }
+
+    function sendGetRequest(endpoint) {
+        const form = document.querySelector(`#${endpoint === '/getSettings' ? 'getSettingsForm' : 'getStateInstanceForm'}`);
+        const params = new URLSearchParams(new FormData(form)).toString();
+        fetch(`${endpoint}?${params}`, {
+            method: 'GET'
+        }).then(response => response.text())
+            .then(data => document.getElementById('responseText').value = data)
+            .catch(error => document.getElementById('responseText').value = `Error: ${error}`);
+    }
+
+    function sendPostRequest(endpoint) {
+        const form = document.querySelector(`#${endpoint === '/sendMessage' ? 'sendMessageForm' : 'sendFileByUrlForm'}`);
+        const formData = new FormData(form);
+        fetch(endpoint, {
+            method: 'POST',
+            body: formData
+        }).then(response => response.text())
+            .then(data => document.getElementById('responseText').value = data)
+            .catch(error => document.getElementById('responseText').value = `Error: ${error}`);
+    }
+</script>
+</body>
+</html>
